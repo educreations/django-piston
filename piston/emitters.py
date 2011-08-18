@@ -22,6 +22,7 @@ except NameError:
 
 from django.db.models.query import QuerySet
 from django.db.models import Model, permalink
+from django.db.models.fields.files import FieldFile
 from django.utils import simplejson
 from django.utils.xmlutils import SimplerXMLGenerator
 from django.utils.encoding import smart_unicode
@@ -122,6 +123,8 @@ class Emitter(object):
                     ret = _any(f())
             elif repr(thing).startswith("<django.db.models.fields.related.RelatedManager"):
                 ret = _any(thing.all())
+            elif isinstance(thing, FieldFile):
+                ret = _any(thing.url)
             else:
                 ret = smart_unicode(thing, strings_only=True)
 
