@@ -123,7 +123,7 @@ class Emitter(object):
                     ret = _any(f())
             elif repr(thing).startswith("<django.db.models.fields.related.RelatedManager"):
                 ret = _any(thing.all())
-            elif isinstance(thing, FieldFile):
+            elif isinstance(thing, FieldFile) and hasattr(thing, 'url'):
                 ret = _any(thing.url)
             else:
                 ret = smart_unicode(thing, strings_only=True)
