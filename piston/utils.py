@@ -311,15 +311,19 @@ def send_consumer_mail(consumer):
     try:
         subject = settings.PISTON_OAUTH_EMAIL_SUBJECTS[consumer.status]
     except AttributeError:
-        subject = "Your API Consumer for %s " % Site.objects.get_current().name
-        if consumer.status == "accepted":
-            subject += "was accepted!"
-        elif consumer.status == "canceled":
-            subject += "has been canceled."
-        elif consumer.status == "rejected":
-            subject += "has been rejected."
-        else: 
-            subject += "is awaiting approval."
+        if 'django.contrib.sites' in settings.INSTALLED_APPS:
+            subject = "Your API Consumer for %s " % Site.objects.get_current().name
+            if consumer.status == "accepted":
+                subject += "was accepted!"
+            elif consumer.status == "canceled":
+                subject += "has been canceled."
+            elif consumer.status == "rejected":
+                subject += "has been rejected."
+            else: 
+                subject += "is awaiting approval."
+        else:
+            # The sites framework is not installed
+            return
 
     template = "piston/mails/consumer_%s.txt" % consumer.status    
     
