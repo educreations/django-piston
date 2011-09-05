@@ -12,16 +12,17 @@ import os
 
 setup(
     name = "django-piston",
-    version = "0.2.3rc1",
-    url = 'http://bitbucket.org/jespern/django-piston/wiki/Home',
-	download_url = 'http://bitbucket.org/jespern/django-piston/downloads/',
-    license = 'BSD',
-    description = "Piston is a Django mini-framework creating APIs.",
+    version = "0.2.3rc2",
     author = 'Jesper Noehr',
     author_email = 'jesper@noehr.org',
+    url = 'https://github.com/streeter/django-piston',
+    description = "Piston is a Django mini-framework creating APIs.",
+    license = 'BSD',
     packages = find_packages(),
-    include_package_data = True,
     zip_safe = False,
+    install_requires=[
+    ],
+    include_package_data = True,
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
@@ -30,5 +31,5 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
-    ]
+    ],
 )
