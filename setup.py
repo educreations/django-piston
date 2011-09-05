@@ -20,6 +20,8 @@ setup(
     author = 'Jesper Noehr',
     author_email = 'jesper@noehr.org',
     packages = find_packages(),
+    install_requires = [
+    ],
     include_package_data = True,
     zip_safe = False,
     classifiers = [
