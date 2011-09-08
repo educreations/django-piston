@@ -45,7 +45,7 @@ class Resource(object):
 
         # Erroring
         self.email_errors = getattr(settings, 'PISTON_EMAIL_ERRORS', True)
-        self.display_errors = getattr(settings, 'PISTON_DISPLAY_ERRORS', True)
+        self.display_errors = getattr(settings, 'PISTON_DISPLAY_ERRORS', settings.DEBUG)
         self.stream = getattr(settings, 'PISTON_STREAM_OUTPUT', False)
 
     def determine_emitter(self, request, *args, **kwargs):
