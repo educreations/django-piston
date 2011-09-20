@@ -628,7 +628,7 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
         # HMAC object.
         try:
             import hashlib # 2.5
-            hashed = hmac.new(key, raw, hashlib.sha1)
+            hashed = hmac.new(str(key), raw, hashlib.sha1)
         except:
             import sha # Deprecated
             hashed = hmac.new(key, raw, sha)
