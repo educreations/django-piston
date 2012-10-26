@@ -61,23 +61,17 @@ class Consumer(models.Model):
     def generate_random_codes(self):
         """
         Used to generate random key/secret pairings. Use this after you've
-        added the other data in place of save(). 
+        added the other data before save(). 
 
         c = Consumer()
         c.name = "My consumer" 
         c.description = "An app that makes ponies from the API."
         c.user = some_user_object
         c.generate_random_codes()
+        c.save()
         """
-        key = User.objects.make_random_password(length=KEY_SIZE)
-        secret = generate_random(SECRET_SIZE)
-
-        while Consumer.objects.filter(key__exact=key, secret__exact=secret).count():
-            secret = generate_random(SECRET_SIZE)
-
-        self.key = key
-        self.secret = secret
-        self.save()
+        self.key = generate_random(KEY_SIZE)
+        self.secret = generate_random(SECRET_SIZE)
 
 
 class Token(models.Model):
@@ -122,16 +116,9 @@ class Token(models.Model):
         return urllib.urlencode(token_dict)
 
     def generate_random_codes(self):
-        key = User.objects.make_random_password(length=KEY_SIZE)
-        secret = generate_random(SECRET_SIZE)
+        self.key = generate_random(KEY_SIZE)
+        self.secret = generate_random(SECRET_SIZE)
 
-        while Token.objects.filter(key__exact=key, secret__exact=secret).count():
-            secret = generate_random(SECRET_SIZE)
-
-        self.key = key
-        self.secret = secret
-        self.save()
-        
     # -- OAuth 1.0a stuff
 
     def get_callback_url(self):
