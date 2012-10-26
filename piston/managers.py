@@ -4,37 +4,22 @@ from django.contrib.auth.models import User
 KEY_SIZE = 18
 SECRET_SIZE = 32
 
-class KeyManager(models.Manager):
-    '''Add support for random key/secret generation
-    '''
-    def generate_random_codes(self):
-        key = User.objects.make_random_password(length=KEY_SIZE)
-        secret = User.objects.make_random_password(length=SECRET_SIZE)
 
-        while self.filter(key__exact=key, secret__exact=secret).count():
-            secret = User.objects.make_random_password(length=SECRET_SIZE)
-
-        return key, secret
+def generate_random(length):
+    return User.objects.make_random_password(length=length)
 
 
-class ConsumerManager(KeyManager):
+class ConsumerManager(models.Manager):
     def create_consumer(self, name, description=None, user=None):
         """
         Shortcut to create a consumer with random key/secret.
         """
-        consumer, created = self.get_or_create(name=name)
-
-        if user:
-            consumer.user = user
-
-        if description:
-            consumer.description = description
-
-        if created:
-            consumer.key, consumer.secret = self.generate_random_codes()
-            consumer.save()
-
-        return consumer
+        return self.create(
+            name=name,
+            description=description,
+            user=user,
+            key=generate_random(KEY_SIZE),
+            secret=generate_random(SECRET_SIZE))
 
     _default_consumer = None
 
@@ -50,19 +35,15 @@ class ResourceManager(models.Manager):
 
         return self._default_resource        
 
-class TokenManager(KeyManager):
+class TokenManager(models.Manager):
     def create_token(self, consumer, token_type, timestamp, user=None):
         """
         Shortcut to create a token with random key/secret.
         """
-        token, created = self.get_or_create(consumer=consumer, 
-                                            token_type=token_type, 
-                                            timestamp=timestamp,
-                                            user=user)
-
-        if created:
-            token.key, token.secret = self.generate_random_codes()
-            token.save()
-
-        return token
-        
+        return self.create(
+            consumer=consumer,
+            token_type=token_type,
+            timestamp=timestamp,
+            user=user,
+            key=generate_random(KEY_SIZE),
+            secret=generate_random(SECRET_SIZE))
