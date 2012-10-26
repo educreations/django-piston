@@ -23,6 +23,7 @@ class ConsumerTest(TestCase):
         self.consumer.description = "A test consumer for Piston."
         self.consumer.user = User.objects.get(pk=3)
         self.consumer.generate_random_codes()
+        self.consumer.save()
 
     def _pre_test_email(self):
         template = "piston/mails/consumer_%s.txt" % self.consumer.status
