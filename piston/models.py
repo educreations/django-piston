@@ -1,4 +1,7 @@
-import urllib, time, urlparse
+import functools
+import time
+import urllib
+import urlparse
 
 # Django imports
 from django.db.models.signals import post_save, post_delete
@@ -37,8 +40,12 @@ class Consumer(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
-    key = models.CharField(max_length=KEY_SIZE)
-    secret = models.CharField(max_length=SECRET_SIZE)
+    key = models.CharField(
+        max_length=KEY_SIZE,
+        default=functools.partial(generate_random, KEY_SIZE))
+    secret = models.CharField(
+        max_length=SECRET_SIZE,
+        default=functools.partial(generate_random, SECRET_SIZE))
 
     status = models.CharField(max_length=16, choices=CONSUMER_STATES, default='pending')
     user = models.ForeignKey(User, null=True, blank=True, related_name='consumers')
