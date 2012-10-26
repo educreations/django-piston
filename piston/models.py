@@ -32,16 +32,19 @@ class Nonce(models.Model):
     consumer_key = models.CharField(max_length=KEY_SIZE)
     key = models.CharField(max_length=255)
     
+    class Meta:
+        unique_together = ('token_key', 'consumer_key', 'key')
+
     def __unicode__(self):
         return u"Nonce %s for %s" % (self.key, self.consumer_key)
 
 
 class Consumer(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
     key = models.CharField(
-        max_length=KEY_SIZE,
+        max_length=KEY_SIZE, unique=True,
         default=functools.partial(generate_random, KEY_SIZE))
     secret = models.CharField(
         max_length=SECRET_SIZE,
@@ -97,6 +100,9 @@ class Token(models.Model):
     
     objects = TokenManager()
     
+    class Meta:
+        unique_together = ('key', 'token_type')
+
     def __unicode__(self):
         return u"%s Token %s for %s" % (self.get_token_type_display(), self.key, self.consumer)
 
