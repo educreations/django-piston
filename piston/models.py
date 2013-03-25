@@ -4,6 +4,7 @@ import urllib
 import urlparse
 
 # Django imports
+from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.db import models
 from django.contrib.auth.models import User
@@ -23,6 +24,10 @@ CONSUMER_STATES = (
     ('canceled', 'Canceled'),
     ('rejected', 'Rejected')
 )
+
+
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
 
 def generate_random(length=SECRET_SIZE):
     return User.objects.make_random_password(length=length)
@@ -51,7 +56,8 @@ class Consumer(models.Model):
         default=functools.partial(generate_random, SECRET_SIZE))
 
     status = models.CharField(max_length=16, choices=CONSUMER_STATES, default='pending')
-    user = models.ForeignKey(User, null=True, blank=True, related_name='consumers')
+    user = models.ForeignKey(AUTH_USER_MODEL,
+                             null=True, blank=True, related_name='consumers')
 
     objects = ConsumerManager()
         
@@ -86,7 +92,8 @@ class Token(models.Model):
     timestamp = models.IntegerField(default=long(time.time()))
     is_approved = models.BooleanField(default=False)
     
-    user = models.ForeignKey(User, null=True, blank=True, related_name='tokens')
+    user = models.ForeignKey(AUTH_USER_MODEL,
+                             null=True, blank=True, related_name='tokens')
     consumer = models.ForeignKey(Consumer)
     
     callback = models.CharField(max_length=255, null=True, blank=True)
