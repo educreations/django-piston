@@ -214,7 +214,7 @@ class Resource(object):
             # the raw data
             result = result._container
 
-        srl = emitter(result, typemapper, handler, fields, anonymous)
+        srl = emitter(result, typemapper, handler, request, fields, anonymous)
 
         try:
             """

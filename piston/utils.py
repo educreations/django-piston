@@ -1,3 +1,4 @@
+from functools import wraps
 import time
 
 import django
@@ -22,6 +23,15 @@ def get_version():
 def format_error(error):
     return u"Piston/%s (Django %s) crash report:\n\n%s" % \
         (get_version(), django_version(), error)
+
+
+def accepts_request(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs)
+    wrapper.accepts_request = True
+    return wrapper
+
 
 class rc_factory(object):
     """

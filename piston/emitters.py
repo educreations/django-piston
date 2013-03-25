@@ -73,10 +73,11 @@ class Emitter(object):
                             'delete', 'model', 'anonymous',
                             'allowed_methods', 'fields', 'exclude' ])
 
-    def __init__(self, payload, typemapper, handler, fields=(), anonymous=True):
+    def __init__(self, payload, typemapper, handler, request, fields=(), anonymous=True):
         self.typemapper = typemapper
         self.data = payload
         self.handler = handler
+        self.request = request
         self.fields = fields
         self.anonymous = anonymous
 
@@ -260,7 +261,13 @@ class Emitter(object):
                         # Overriding normal field which has a "resource method"
                         # so you can alter the contents of certain fields without
                         # using different names.
-                        ret[maybe_field] = _any(met_fields[maybe_field](data))
+                        f = met_fields[maybe_field]
+                        if getattr(f, 'accepts_request', False):
+                            val = f(data, self.request)
+                        else:
+                            val = f(data)
+
+                        ret[maybe_field] = _any(val)
 
                     else:
                         maybe = getattr(data, maybe_field, None)
