@@ -7,7 +7,7 @@ import urlparse
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail, mail_admins
 
 # Piston imports
@@ -30,7 +30,7 @@ AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 def generate_random(length=SECRET_SIZE):
-    return User.objects.make_random_password(length=length)
+    return get_user_model().objects.make_random_password(length=length)
 
 class Nonce(models.Model):
     token_key = models.CharField(max_length=KEY_SIZE)

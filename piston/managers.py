@@ -1,12 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 KEY_SIZE = 18
 SECRET_SIZE = 32
 
 
 def generate_random(length):
-    return User.objects.make_random_password(length=length)
+    return get_user_model().objects.make_random_password(length=length)
 
 
 class ConsumerManager(models.Manager):
