@@ -10,7 +10,6 @@ from django.core.mail import send_mail, mail_admins
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.template import loader, TemplateDoesNotExist
-from django.contrib.sites.models import Site
 from decorator import decorator
 
 from datetime import datetime, timedelta
@@ -335,6 +334,7 @@ def send_consumer_mail(consumer):
         subject = settings.PISTON_OAUTH_EMAIL_SUBJECTS[consumer.status]
     except AttributeError:
         if 'django.contrib.sites' in settings.INSTALLED_APPS:
+            from django.contrib.sites.models import Site
             subject = "Your API Consumer for %s " % Site.objects.get_current().name
             if consumer.status == "accepted":
                 subject += "was accepted!"
